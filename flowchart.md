@@ -1,7 +1,12 @@
 # Workspace Ideas
 
-so start by creating functions for the following items and testing them in your browser’s console.
-- add
-- subtract
-- multiply
-- divide
+Establish base style of interface
+
+Utilize CSS grid to create:
+- display
+- numeric buttons
+- operation buttons (including clear button)
+
+Create hover state over buttons (maintain cursor highlight over display for copy/paste functionality)
+
+Create basic JavaScript logic surrounding mathematical operations
