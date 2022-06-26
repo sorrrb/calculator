@@ -61,11 +61,13 @@ let display = () => {
   const NUMS = document.querySelectorAll('div.num');
   const ZERO_NUM = document.querySelector('div.zero-btn');
 
+  // SEND NUMBER ON CLICK TO DISPLAY - add number to display off relevant click
   function sendToDisplay(value) {
     let shownValue = DISPLAY.textContent;
     shownValue += value;
     displayValue = +shownValue;
     DISPLAY.textContent = displayValue;
+    // NEED TO ADD COMMA FUNCTIONALITY
   }
 
   let updateNum = (e) => {
