@@ -4,7 +4,8 @@ let display = () => {
   const ROWS = 6;
   const COLS = 4;
   
-  let displayValue = 0;
+  let displayValueNum = 0;
+  let displayValueString = '';
 
   // CALCULATOR BUTTON VALUES - array of strings denoting button functions
   const BUTTON_VALUES = ['C', '±', '%', '÷', '7', '8', '9', 'x', '4', '5', '6',
@@ -29,7 +30,7 @@ let display = () => {
         const SPAN_TWO = document.createElement('div');
         SPAN_TWO.classList.add('click');
         SPAN_TWO.classList.add('zero-btn');
-        SPAN_TWO.textContent = displayValue;
+        SPAN_TWO.textContent = displayValueString;
         container.appendChild(SPAN_TWO);
         j++;
       }
@@ -62,12 +63,42 @@ let display = () => {
   const ZERO_NUM = document.querySelector('div.zero-btn');
 
   // SEND NUMBER ON CLICK TO DISPLAY - add number to display off relevant click
-  function sendToDisplay(value) {
-    let shownValue = DISPLAY.textContent;
-    shownValue += value;
-    displayValue = +shownValue;
-    DISPLAY.textContent = displayValue;
+  function sendToDisplay(calcValue) {
+    let stringRef = DISPLAY.textContent;
+    if (stringRef === '0') {
+      DISPLAY.textContent = '';
+      stringRef = '';
+    }
+    displayValueString = stringRef + calcValue;
+    displayValueString = appendCommas(displayValueString);
+    displayValueNum = removeCommas(displayValueString);
+    DISPLAY.textContent = displayValueString;
     // NEED TO ADD COMMA FUNCTIONALITY
+  }
+
+  function appendCommas(stringNum) {
+    const TRUE_NUM = removeCommas(stringNum);
+    const STRING_LENGTH = TRUE_NUM.length;
+    if (STRING_LENGTH > 3) {
+      const arrayConvert = Array.from(TRUE_NUM);
+      for (let i = 0; i < STRING_LENGTH; i++) {
+        if ((i % 3) === 1) {
+          // insert a ',' every fourth element (3+1)
+          arrayConvert.splice(i, 0, ',');
+        }
+      }
+      const reconvertNum = arrayConvert.join('');
+      return reconvertNum;
+    }
+    else {
+      return stringNum;
+    }
+  }
+
+  function removeCommas(stringNum) {
+    let arrayCopy = Array.from(stringNum);
+    const result = arrayCopy.filter(letter => letter !== ',');
+    return result.join('');
   }
 
   let updateNum = (e) => {
@@ -79,6 +110,8 @@ let display = () => {
   });
 
   ZERO_NUM.addEventListener('click', updateNum);
+
+  console.log(removeCommas('1,234,567'));
 }
 
 // HELPER FUNCTIONS
