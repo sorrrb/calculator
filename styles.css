@@ -24,14 +24,14 @@ div.calculator {
 
   background-color: darkgray;
   border-radius: 16px;
-  border: 2px solid gray;
+  border: 3px solid gray;
 }
 
 div.display {
   grid-column-start: first;
   grid-column-end: span 4;
 
-  background-color: antiquewhite;
+  background-color: hsl(0, 0%, 93%);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
   border-bottom: 2px solid gray;
@@ -53,8 +53,8 @@ div.click {
   font-size: 40px;
   margin: 8px;
 
-  background-color: antiquewhite;
-  border: 2px solid gray;
+  background-color: gray;
+  border: 2px solid hsl(0, 0%, 88%);
   border-radius: 50%;
 }
 
@@ -68,6 +68,14 @@ div.zero-btn {
   border-radius: 64px;
 
   padding-left: 15%;
+}
+
+div.function {
+  background-color: hsla(0, 5%, 70%, 0.9);
+}
+
+div.operate {
+  background-color: hsl(25, 80%, 60%);
 }
 
 div.click:hover {

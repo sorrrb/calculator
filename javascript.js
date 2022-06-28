@@ -1,12 +1,8 @@
 let display = () => {
   const container = document.querySelector('div.calculator');
   
-  const ROWS = 6;
-  const COLS = 4;
-
-  let CALC_DISPLAY_VALUE;
-  let valueA = null;
-  let valueB = null;
+  const ROWS = 6; // GRID - calculator # rows
+  const COLS = 4; // GRID - calculator # cols
 
   // CALCULATOR BUTTON VALUES - array of strings denoting button functions
   const BUTTON_VALUES = ['C', '±', '%', '÷', '7', '8', '9', 'x', '4', '5', '6',
@@ -21,9 +17,16 @@ let display = () => {
         container.appendChild(NUM_DISPLAY);
         break;
       }
-      else if (i === 1 || j === 3) {
+      else if (i === 1 && j !== 3) {
+        const CALC_FUNCTION = document.createElement('div');
+        CALC_FUNCTION.classList.add('click');
+        CALC_FUNCTION.classList.add('function');
+        container.appendChild(CALC_FUNCTION);
+      }
+      else if (j === 3) {
         const CALC_OPERATOR = document.createElement('div');
         CALC_OPERATOR.classList.add('click');
+        CALC_OPERATOR.classList.add('function');
         CALC_OPERATOR.classList.add('operate');
         container.appendChild(CALC_OPERATOR);
       }
@@ -51,7 +54,7 @@ let display = () => {
   }
 
   const DISPLAY = document.querySelector('div.display');
-  DISPLAY.textContent = 0;
+  
 
   // IMPLEMENT TEXT - add relevant button text content for each button
   let eachElement = DISPLAY.nextElementSibling;
@@ -62,64 +65,46 @@ let display = () => {
 
   const NUMS = document.querySelectorAll('div.num');
   const ZERO_NUM = document.querySelector('div.zero-btn');
-  const OPERATORS = document.querySelectorAll('div.operate');
+  const OPERATORS = document.querySelectorAll('div.function');
 
-  let clearDisplay = () => {
-    const clearVal = 0;
-    CALC_DISPLAY_VALUE = clearVal;
-    DISPLAY.textContent = CALC_DISPLAY_VALUE;
-  }
+  let callAlert = () => alert(`hi!`);
 
-  let updateDisplay = (e) => {
-    const buttonContext = e.target.textContent;
-    if (isNaN(Number(buttonContext))) { // if button pressed is not a number
-      // do this
-    }
-    else {
-      if (DISPLAY.textContent !== `0`) { // else fill display with numbers pressed
-        CALC_DISPLAY_VALUE += e.target.textContent.toString();
-        DISPLAY.textContent = CALC_DISPLAY_VALUE;
-        CALC_DISPLAY_VALUE = Number(CALC_DISPLAY_VALUE);
-      }
-      else {
-        CALC_DISPLAY_VALUE = Number(e.target.textContent);
-        DISPLAY.textContent = CALC_DISPLAY_VALUE;
-      }
-    }
+  let calculateDisplay = () => {
+    
   }
 
   // Event listeners for buttons
   NUMS.forEach((number) => {
-    number.addEventListener('click', updateDisplay);
+    number.addEventListener('click', callAlert); // iterate through each number button
   });
 
-  ZERO_NUM.addEventListener('click', updateDisplay);
+  ZERO_NUM.addEventListener('click', callAlert); // add same listener to 0
 
   OPERATORS.forEach((button) => {
     switch (button.textContent) {
       case 'C':
-        button.addEventListener('click', clearDisplay);
+        button.addEventListener('click', callAlert);
         break;
       case '+':
-        button.addEventListener('click', updateDisplay);
+        button.addEventListener('click', calculateDisplay);
         break;
       case '-':
-        button.addEventListener('click', clearDisplay);
+        button.addEventListener('click', callAlert);
         break;
       case 'x':
-        button.addEventListener('click', clearDisplay);
+        button.addEventListener('click', callAlert);
         break;
       case '÷':
-        button.addEventListener('click', clearDisplay);
+        button.addEventListener('click', callAlert);
         break;
       case '±':
-        button.addEventListener('click', clearDisplay);
+        button.addEventListener('click', callAlert);
         break;
       case '%':
-        button.addEventListener('click', clearDisplay);
+        button.addEventListener('click', callAlert);
         break;
       case '=':
-        button.addEventListener('click', updateDisplay);
+        button.addEventListener('click', callAlert);
         break;
     } // DECIMAL OMITTED
   });
