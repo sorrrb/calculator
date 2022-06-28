@@ -3,9 +3,10 @@ let display = () => {
   
   const ROWS = 6;
   const COLS = 4;
-  
-  let displayValueNum = 0;
-  let displayValueString = '';
+
+  let CALC_DISPLAY_VALUE;
+  let valueA = null;
+  let valueB = null;
 
   // CALCULATOR BUTTON VALUES - array of strings denoting button functions
   const BUTTON_VALUES = ['C', '±', '%', '÷', '7', '8', '9', 'x', '4', '5', '6',
@@ -30,7 +31,7 @@ let display = () => {
         const SPAN_TWO = document.createElement('div');
         SPAN_TWO.classList.add('click');
         SPAN_TWO.classList.add('zero-btn');
-        SPAN_TWO.textContent = displayValueString;
+        SPAN_TWO.textContent = 0;
         container.appendChild(SPAN_TWO);
         j++;
       }
@@ -61,57 +62,67 @@ let display = () => {
 
   const NUMS = document.querySelectorAll('div.num');
   const ZERO_NUM = document.querySelector('div.zero-btn');
+  const OPERATORS = document.querySelectorAll('div.operate');
 
-  // SEND NUMBER ON CLICK TO DISPLAY - add number to display off relevant click
-  function sendToDisplay(calcValue) {
-    let stringRef = DISPLAY.textContent;
-    if (stringRef === '0') {
-      DISPLAY.textContent = '';
-      stringRef = '';
-    }
-    displayValueString = stringRef + calcValue;
-    displayValueString = appendCommas(displayValueString);
-    displayValueNum = removeCommas(displayValueString);
-    DISPLAY.textContent = displayValueString;
-    // NEED TO ADD COMMA FUNCTIONALITY
+  let clearDisplay = () => {
+    const clearVal = 0;
+    CALC_DISPLAY_VALUE = clearVal;
+    DISPLAY.textContent = CALC_DISPLAY_VALUE;
   }
 
-  function appendCommas(stringNum) {
-    const TRUE_NUM = removeCommas(stringNum);
-    const STRING_LENGTH = TRUE_NUM.length;
-    if (STRING_LENGTH > 3) {
-      const arrayConvert = Array.from(TRUE_NUM);
-      for (let i = 0; i < STRING_LENGTH; i++) {
-        if ((i % 3) === 1) {
-          // insert a ',' every fourth element (3+1)
-          arrayConvert.splice(i, 0, ',');
-        }
-      }
-      const reconvertNum = arrayConvert.join('');
-      return reconvertNum;
+  let updateDisplay = (e) => {
+    const buttonContext = e.target.textContent;
+    if (isNaN(Number(buttonContext))) { // if button pressed is not a number
+      // do this
     }
     else {
-      return stringNum;
+      if (DISPLAY.textContent !== `0`) { // else fill display with numbers pressed
+        CALC_DISPLAY_VALUE += e.target.textContent.toString();
+        DISPLAY.textContent = CALC_DISPLAY_VALUE;
+        CALC_DISPLAY_VALUE = Number(CALC_DISPLAY_VALUE);
+      }
+      else {
+        CALC_DISPLAY_VALUE = Number(e.target.textContent);
+        DISPLAY.textContent = CALC_DISPLAY_VALUE;
+      }
     }
   }
 
-  function removeCommas(stringNum) {
-    let arrayCopy = Array.from(stringNum);
-    const result = arrayCopy.filter(letter => letter !== ',');
-    return result.join('');
-  }
-
-  let updateNum = (e) => {
-    sendToDisplay(e.target.textContent);
-  }
-
+  // Event listeners for buttons
   NUMS.forEach((number) => {
-    number.addEventListener('click', updateNum);
+    number.addEventListener('click', updateDisplay);
   });
 
-  ZERO_NUM.addEventListener('click', updateNum);
+  ZERO_NUM.addEventListener('click', updateDisplay);
 
-  console.log(removeCommas('1,234,567'));
+  OPERATORS.forEach((button) => {
+    switch (button.textContent) {
+      case 'C':
+        button.addEventListener('click', clearDisplay);
+        break;
+      case '+':
+        button.addEventListener('click', updateDisplay);
+        break;
+      case '-':
+        button.addEventListener('click', clearDisplay);
+        break;
+      case 'x':
+        button.addEventListener('click', clearDisplay);
+        break;
+      case '÷':
+        button.addEventListener('click', clearDisplay);
+        break;
+      case '±':
+        button.addEventListener('click', clearDisplay);
+        break;
+      case '%':
+        button.addEventListener('click', clearDisplay);
+        break;
+      case '=':
+        button.addEventListener('click', updateDisplay);
+        break;
+    } // DECIMAL OMITTED
+  });
 }
 
 // HELPER FUNCTIONS
@@ -122,10 +133,6 @@ let multiply = (a,b) => a * b;
 let divide = (a,b) => a / b;
 
 let operate = (operator, x, y) => {
-  const plus = 'add';
-  const minus = 'subtract';
-  const times = 'multiply';
-  const over = 'divide';
   let result;
   switch(operator) {
     case plus:
@@ -143,5 +150,11 @@ let operate = (operator, x, y) => {
   }
   return result;
 }
+
+// OPERATIONS
+const plus = `+`;
+const minus = `-`;
+const times = `x`;
+const over = `÷`;
 
 display();
