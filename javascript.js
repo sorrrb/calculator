@@ -40,6 +40,9 @@ let display = () => {
         break;
       case OVER:
         result = divide(x,y);
+        if (y === 0) {
+          result = String.fromCodePoint(0x1F921);
+        }
         break;
     }
     return result;
@@ -105,63 +108,99 @@ let display = () => {
   const OPERATORS = document.querySelectorAll('div.function');
   const FLOAT = document.querySelector('div.decimal');
 
-  let isDisplayEmpty = () => {
-    return ((Number(DISPLAY.textContent) === 0) || (storedNum === Number(DISPLAY.textContent)) ? true : false);
+  let isDisplayInactive = () => {
+    return (((Number(DISPLAY.textContent) === 0) && (storedNum === Number(DISPLAY.textContent))) || storedNum === null ? true : false);
   }
 
   let storedOperation = null;
-  let updatedOperation = null;
+  let updatedOperation;
   let storedNum = null;
+  let shouldRenewDisplay;
 
   let populateDisplay = e => {
     let clickedButton = e.target.textContent;
     let buttonNaN = Number(clickedButton);
     if (!(Number.isNaN(buttonNaN))) {
-      let displayActiveBool = isDisplayEmpty();
-      if (!displayActiveBool) {
+      let isDisplayEmpty = isDisplayInactive();
+      if (isDisplayEmpty && (typeof(shouldRenewDisplay) === 'object' || typeof(shouldRenewDisplay) === 'undefined')) {
+        storedNum += Number(DISPLAY.textContent);
+        DISPLAY.textContent = clickedButton;
+        shouldRenewDisplay = false;
+      }
+      else if (isDisplayEmpty || shouldRenewDisplay) {
+        DISPLAY.textContent = clickedButton;
+        shouldRenewDisplay = false;
+      }
+      else if (!isDisplayEmpty) {
         DISPLAY.textContent += clickedButton;
       }
       else {
         DISPLAY.textContent = clickedButton;
+        storedNum = Number(DISPLAY.textContent);
       }
     }
     else {
-      if (clickedButton === 'C') {
+      if (clickedButton === CLEAR) { // clear button press
         DISPLAY.textContent = 0;
         storedOperation = null;
+        updatedOperation = null;
         storedNum = null;
+        shouldRenewDisplay = null;
       }
+      else if (clickedButton === INVERT) { // +- button press
+        storedNum = -(Number(DISPLAY.textContent))
+        DISPLAY.textContent = storedNum;
+      }
+      else if (clickedButton === PERCENT) { // +- button press
+        DISPLAY.textContent = (Number(DISPLAY.textContent)/100)
+      }
+      // grab initial operation/value when operator btn is pressed for the first time
       else if (storedOperation === null) {
         storedOperation = clickedButton;
         storedNum = Number(DISPLAY.textContent);
+        shouldRenewDisplay = true;
       }
-      else if (storedOperation === '=') {
-        DISPLAY.textContent = operate(updatedOperation, Number(DISPLAY.textContent), storedNum);
+      // update display with recent operation when pressing = multiple times
+      else if (storedOperation === RESULT) {
+        if ((typeof(updatedOperation) === 'undefined') || (typeof(updatedOperation) === 'object')) {
+          storedOperation = null;
+          updatedOperation = null;
+          storedNum = null;
+          return;
+        }
+        else if (updatedOperation === RESULT) {
+          return;
+        }
+        else {
+          DISPLAY.textContent = operate(updatedOperation, Number(DISPLAY.textContent), storedNum);
+          storedNum = Number(DISPLAY.textContent);
+          storedOperation = null;
+          updatedOperation = null;
+        }
       }
       else {
-        let operateOutput;
+        let operateOutput = operate(storedOperation, storedNum, Number(DISPLAY.textContent));
+        DISPLAY.textContent = operateOutput;
+        storedNum = (clickedButton === RESULT ? operateOutput : Number(DISPLAY.textContent));
+        updatedOperation = storedOperation;
         switch (clickedButton) {
           case PLUS:
-            operateOutput = operate(storedOperation, storedNum, Number(DISPLAY.textContent));
-            storedNum = Number(DISPLAY.textContent);
-            DISPLAY.textContent = operateOutput;
-            updatedOperation = storedOperation;
             storedOperation = PLUS;
             break;
           case MINUS:
+            storedOperation = MINUS;
             break;
           case TIMES:
+            storedOperation = TIMES;
             break;
           case OVER:
+            storedOperation = OVER;
             break;
           case RESULT:
-            operateOutput = operate(storedOperation, storedNum, Number(DISPLAY.textContent));
-            storedNum = Number(DISPLAY.textContent);
-            DISPLAY.textContent = operateOutput;
-            updatedOperation = storedOperation;
-            storedOperation = RESULT;
+            storedOperation = null;
             break;
         }
+        shouldRenewDisplay = true;
       }
     }
   }
