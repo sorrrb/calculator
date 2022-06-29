@@ -4,10 +4,10 @@ A webpage implementation of a basic function calculator<br>
 [Live Demo](https://sorrrb.github.io/js-calculator/)
 
 ## Demo Preview
-N/A
+![Calculator Demo](./resources/democalc.png)
 
 ### Changelog
-N/A
+6/29/2022 19:40 - complete basic four function calculator
 
 ### Languages
 - HTML
@@ -15,10 +15,21 @@ N/A
 - JavaScript (vanilla - ES6)
 
 ### Concepts
-N/A
+- Nested loops
+- Document methods
+- Callback functions
+- Event listeners
+- Arrow functions
+- Ternary operator
+- Manipulating boolean values / undefined values / null
+- CSS Grid
 
 ## Attribution(s)
 N/A
 
 #### To-Do
-N/A
+- Round-off long decimals calculated through four function means
+- Comma dilineation on numbers >= 1,000
+- Floating point decimals implementation
+- Backspace button
+- Keyboard support
