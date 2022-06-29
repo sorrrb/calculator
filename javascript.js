@@ -91,6 +91,7 @@ let display = () => {
   }
 
   const DISPLAY = document.querySelector('div.display');
+  DISPLAY.textContent = 0;
   
   // IMPLEMENT TEXT - add relevant button text content for each button
   let eachElement = DISPLAY.nextElementSibling;
@@ -104,78 +105,79 @@ let display = () => {
   const OPERATORS = document.querySelectorAll('div.function');
   const FLOAT = document.querySelector('div.decimal');
 
-  let displayValue = 0;
-  let displayString = '';
-  DISPLAY.textContent = displayValue;
-  let storedOperand = 0;
-  let storedOperator = '';
-  let currentCalcDisplay;
+  let isDisplayEmpty = () => {
+    return ((Number(DISPLAY.textContent) === 0) || (storedNum === Number(DISPLAY.textContent)) ? true : false);
+  }
 
-  let calculateDisplay = (e) => {
-    let pressedButton = e.target.textContent;
-    let castTypeButton = Number(pressedButton);
-    let isNumberBool = (isNaN(castTypeButton) ? true : false);
-    if (isNumberBool) {
-      switch (e.target.textContent) {
-        case CLEAR:
-          displayValue = 0;
-          displayString = '';
-          currentCalcDisplay = displayValue
-          storedOperator = displayString;
-          storedOperand = displayValue;
-          DISPLAY.textContent = displayValue;
-          break;
-        case INVERT:
-          displayValue = -displayValue;
-          DISPLAY.textContent = displayValue;
-          break;
-        case PERCENT:
-          break;
-        case RESULT:
-          break;
-        case PLUS:
-          if (storedOperator === '') {
-            storedOperator = PLUS;
-            storedOperand = displayValue;
-            displayValue = 0;
-            displayString = '';
-            break;
-          }
-          else {
-            currentCalcDisplay = displayValue;
-            displayValue = operate(storedOperator, storedOperand, currentCalcDisplay);
-            DISPLAY.textContent = displayValue;
-            break;
-          }
+  let storedOperation = null;
+  let updatedOperation = null;
+  let storedNum = null;
+
+  let populateDisplay = e => {
+    let clickedButton = e.target.textContent;
+    let buttonNaN = Number(clickedButton);
+    if (!(Number.isNaN(buttonNaN))) {
+      let displayActiveBool = isDisplayEmpty();
+      if (!displayActiveBool) {
+        DISPLAY.textContent += clickedButton;
+      }
+      else {
+        DISPLAY.textContent = clickedButton;
       }
     }
     else {
-      let hasActiveOperation = (storedOperator === '' ? false : true);
-      if (hasActiveOperation && DISPLAY.textContent === '0') {
-        displayString = '';
-        DISPLAY.textContent = displayString;
+      if (clickedButton === 'C') {
+        DISPLAY.textContent = 0;
+        storedOperation = null;
+        storedNum = null;
       }
-      let checkNumCount = (DISPLAY.textContent.length <= 14 ? true : false);
-      if (checkNumCount) {
-        displayString += pressedButton;
-        displayValue = Number(displayString);
-        DISPLAY.textContent = displayValue;
+      else if (storedOperation === null) {
+        storedOperation = clickedButton;
+        storedNum = Number(DISPLAY.textContent);
+      }
+      else if (storedOperation === '=') {
+        DISPLAY.textContent = operate(updatedOperation, Number(DISPLAY.textContent), storedNum);
+      }
+      else {
+        let operateOutput;
+        switch (clickedButton) {
+          case PLUS:
+            operateOutput = operate(storedOperation, storedNum, Number(DISPLAY.textContent));
+            storedNum = Number(DISPLAY.textContent);
+            DISPLAY.textContent = operateOutput;
+            updatedOperation = storedOperation;
+            storedOperation = PLUS;
+            break;
+          case MINUS:
+            break;
+          case TIMES:
+            break;
+          case OVER:
+            break;
+          case RESULT:
+            operateOutput = operate(storedOperation, storedNum, Number(DISPLAY.textContent));
+            storedNum = Number(DISPLAY.textContent);
+            DISPLAY.textContent = operateOutput;
+            updatedOperation = storedOperation;
+            storedOperation = RESULT;
+            break;
+        }
       }
     }
   }
 
   // Event listeners for buttons
   NUMS.forEach((number) => {
-    number.addEventListener('click', calculateDisplay); // iterate through each number button
+    number.addEventListener('click', populateDisplay); // iterate through each number button
   });
 
-  ZERO_NUM.addEventListener('click', calculateDisplay); // add same listener to 0
+  ZERO_NUM.addEventListener('click', populateDisplay); // add same listener to 0
 
   OPERATORS.forEach((button) => {
-    button.addEventListener('click', calculateDisplay);
+    button.addEventListener('click', populateDisplay);
   });
 
-  FLOAT.addEventListener('click', calculateDisplay);
+  FLOAT.addEventListener('click', populateDisplay);
 }
 
 display();
