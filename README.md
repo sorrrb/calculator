@@ -4,7 +4,7 @@ A webpage implementation of a basic function calculator<br>
 [Live Demo](https://sorrrb.github.io/js-calculator/)
 
 ## Demo Preview
-![Calculator Demo](./resources/democalc.png)
+![Calculator Demo](./resources/calcdemo.png)
 
 ### Changelog
 6/29/2022 19:40 - complete basic four function calculator
