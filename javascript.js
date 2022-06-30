@@ -154,6 +154,17 @@ let display = () => {
       else if (clickedButton === PERCENT) { // +- button press
         DISPLAY.textContent = (Number(DISPLAY.textContent)/100)
       }
+      else if (clickedButton === DECIMAL) { // . button press
+        let convertedDisplay = DISPLAY.textContent.split('');
+        let clickedDecimal = (convertedDisplay.includes(DECIMAL) ? true : false);
+        if (clickedDecimal) {
+          return;
+        }
+        else {
+          DISPLAY.textContent += DECIMAL;
+        }
+        storedNum = Number(DISPLAY.textContent);
+      }
       // grab initial operation/value when operator btn is pressed for the first time
       else if (storedOperation === null) {
         storedOperation = clickedButton;
@@ -195,6 +206,8 @@ let display = () => {
             break;
           case OVER:
             storedOperation = OVER;
+            break;
+          case DECIMAL:
             break;
           case RESULT:
             storedOperation = null;

@@ -1,12 +1,24 @@
 # Workspace Ideas
 
-Establish base style of interface
+> Complete basic math operations
+- Create functions which take two operands and:
+  - Adds them
+  - Subtracts them
+  - Multiplies them
+  - Divides them
 
-Utilize CSS grid to create:
-- display
-- numeric buttons
-- operation buttons (including clear button)
+- Create a function operate() which takes two number parameters and calls one of the above functions on those two numbers
 
-Create hover state over buttons (maintain cursor highlight over display for copy/paste functionality)
+- Establish base style for calculator display/interface
+  - Implement +, -, *, /, =, %, ± function buttons
+  - Implement clear button
+  - Implement decimal button (floating point number support)
 
-Create basic JavaScript logic surrounding mathematical operations
+- Implement logic pertaining to numerical input into the calculator
+  - Actively store value on display in variable
+
+- Track value that is displayed when an operation is clicked, as well as operation
+
+- Await next operation input (following some-level of numerical input) and call operate() function using tracked operation & value
+
+- Implement chained expression logic if mathematical equivalence (=) button is not clicked
