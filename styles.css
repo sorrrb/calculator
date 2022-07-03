@@ -58,7 +58,7 @@ div.click {
   border-radius: 50%;
 }
 
-div.zero-btn {
+div.zero {
   grid-column-start: first;
   grid-column-end: span 2;
 
@@ -76,6 +76,13 @@ div.function {
 
 div.operate {
   background-color: hsl(25, 80%, 60%);
+}
+
+div.active-operate {
+  background-color: black;
+  border: 2px solid hsl(25, 80%, 80%);
+  color: hsl(25, 80%, 60%);
+  transition: backgroundColor 100ms, border 50ms;
 }
 
 div.click:hover {

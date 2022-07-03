@@ -1,14 +1,14 @@
-let display = () => {
+let calculatorDisplay = () => {
   const container = document.querySelector('div.calculator');
   
   const ROWS = 6; // GRID - calculator # rows
   const COLS = 4; // GRID - calculator # cols
 
-  // CALCULATOR BUTTON VALUES - array of strings denoting button functions
+  // Button values
   const BUTTON_VALUES = ['C', '±', '%', '÷', '7', '8', '9', 'x', '4', '5', '6',
        '-', '1', '2', '3', '+', '0', '.', '='];
 
-  // OPERATIONS
+  // Operation variables for use
   const PLUS = `+`;
   const MINUS = `-`;
   const TIMES = `x`;
@@ -19,8 +19,7 @@ let display = () => {
   const DECIMAL = `.`;
   const RESULT = `=`;
   
-  // HELPER FUNCTIONS (MATH OPERATORS)
-
+  // Helper functions for math operations
   let add = (a,b) => a + b;
   let subtract = (a,b) => a - b;
   let multiply = (a,b) => a * b;
@@ -47,8 +46,8 @@ let display = () => {
     }
     return result;
   }
-  
-  // DEFINE BUTTONS - nested for loop to create buttons
+
+  // Nested for loops to generate DOM elements & append to container div
   for (let i = 0; i < ROWS; i++) {
     for (let j = 0; j < COLS; j++) {
       if (i === 0) {
@@ -73,7 +72,8 @@ let display = () => {
       else if (i === 5 && j < 1) {
         const SPAN_TWO = document.createElement('div');
         SPAN_TWO.classList.add('click');
-        SPAN_TWO.classList.add('zero-btn');
+        SPAN_TWO.classList.add('num');
+        SPAN_TWO.classList.add('zero');
         SPAN_TWO.textContent = 0;
         container.appendChild(SPAN_TWO);
         j++;
@@ -93,143 +93,86 @@ let display = () => {
     }
   }
 
+  let displayValue = 0;
+  let valueInMemory = 0;
+  let operationInMemory;
+  let operationInProgress = false;
+
   const DISPLAY = document.querySelector('div.display');
-  DISPLAY.textContent = 0;
-  
-  // IMPLEMENT TEXT - add relevant button text content for each button
+  DISPLAY.textContent = displayValue;
+
+  // For loop to give each button text content
   let eachElement = DISPLAY.nextElementSibling;
   for (let i = 0; i < BUTTON_VALUES.length; i++) {
     eachElement.textContent = BUTTON_VALUES[i];
     eachElement = eachElement.nextElementSibling;
   }
 
-  const NUMS = document.querySelectorAll('div.num');
-  const ZERO_NUM = document.querySelector('div.zero-btn');
-  const OPERATORS = document.querySelectorAll('div.function');
-  const FLOAT = document.querySelector('div.decimal');
-
-  let isDisplayInactive = () => {
-    return (((Number(DISPLAY.textContent) === 0) && (storedNum === Number(DISPLAY.textContent))) || storedNum === null ? true : false);
+  // Grabs current stored value in display
+  let grabDisplayValue = () => {
+    let currentValue = ((operationInProgress && displayValue === 0) || (displayValue === 0) ? 0 : displayValue);
+    return currentValue;
   }
 
-  let storedOperation = null;
-  let updatedOperation;
-  let storedNum = null;
-  let shouldRenewDisplay;
+  // Updates display with given value
+  let updateDisplayValue = (value, canResetDisplay) => {
+    let appendValue = grabDisplayValue();
+    let output = (canResetDisplay ? value : appendValue.toString() + value.toString());
+    displayValue = Number(output);
+    DISPLAY.textContent = displayValue;
+  }
 
-  let populateDisplay = e => {
-    let clickedButton = e.target.textContent;
-    let buttonNaN = Number(clickedButton);
-    if (!(Number.isNaN(buttonNaN))) {
-      let isDisplayEmpty = isDisplayInactive();
-      if (isDisplayEmpty && (typeof(shouldRenewDisplay) === 'object' || typeof(shouldRenewDisplay) === 'undefined')) {
-        storedNum += Number(DISPLAY.textContent);
-        DISPLAY.textContent = clickedButton;
-        shouldRenewDisplay = false;
-      }
-      else if (isDisplayEmpty || shouldRenewDisplay) {
-        DISPLAY.textContent = clickedButton;
-        shouldRenewDisplay = false;
-      }
-      else if (!isDisplayEmpty) {
-        DISPLAY.textContent += clickedButton;
-      }
-      else {
-        DISPLAY.textContent = clickedButton;
-        storedNum = Number(DISPLAY.textContent);
-      }
+  // Clears display/values-in-memory
+  let clearDisplayValue = () => {
+    displayValue = 0;
+    valueInMemory = 0;
+    operationInMemory = null;
+    operationInProgress = false;
+    DISPLAY.textContent = displayValue;
+  }
+
+  // Callback to update display with pressed number buttons
+  let buttonUpdate = e => {
+    let buttonValue = Number(e.target.textContent);
+    isDisplayEmpty = ((displayValue === 0) && (valueInMemory === 0) ? true : false);
+    updateDisplayValue(buttonValue, isDisplayEmpty);
+  }
+
+  // Callback to store display value and display operation
+  let callDisplayOperation = e => {
+    let clickedOperation = e.target.textContent;
+    if (operationInProgress) {
+      let newDisplay = operate(operationInMemory, valueInMemory, displayValue);
+      operationInMemory = clickedOperation;
+      updateDisplayValue(newDisplay, true);
+      valueInMemory = displayValue;
+      displayValue = 0;
     }
     else {
-      if (clickedButton === CLEAR) { // clear button press
-        DISPLAY.textContent = 0;
-        storedOperation = null;
-        updatedOperation = null;
-        storedNum = null;
-        shouldRenewDisplay = null;
-      }
-      else if (clickedButton === INVERT) { // +- button press
-        storedNum = -(Number(DISPLAY.textContent))
-        DISPLAY.textContent = storedNum;
-      }
-      else if (clickedButton === PERCENT) { // +- button press
-        DISPLAY.textContent = (Number(DISPLAY.textContent)/100)
-      }
-      else if (clickedButton === DECIMAL) { // . button press
-        let convertedDisplay = DISPLAY.textContent.split('');
-        let clickedDecimal = (convertedDisplay.includes(DECIMAL) ? true : false);
-        if (clickedDecimal) {
-          return;
-        }
-        else {
-          DISPLAY.textContent += DECIMAL;
-        }
-        storedNum = Number(DISPLAY.textContent);
-      }
-      // grab initial operation/value when operator btn is pressed for the first time
-      else if (storedOperation === null) {
-        storedOperation = clickedButton;
-        storedNum = Number(DISPLAY.textContent);
-        shouldRenewDisplay = true;
-      }
-      // update display with recent operation when pressing = multiple times
-      else if (storedOperation === RESULT) {
-        if ((typeof(updatedOperation) === 'undefined') || (typeof(updatedOperation) === 'object')) {
-          storedOperation = null;
-          updatedOperation = null;
-          storedNum = null;
-          return;
-        }
-        else if (updatedOperation === RESULT) {
-          return;
-        }
-        else {
-          DISPLAY.textContent = operate(updatedOperation, Number(DISPLAY.textContent), storedNum);
-          storedNum = Number(DISPLAY.textContent);
-          storedOperation = null;
-          updatedOperation = null;
-        }
-      }
-      else {
-        let operateOutput = operate(storedOperation, storedNum, Number(DISPLAY.textContent));
-        DISPLAY.textContent = operateOutput;
-        storedNum = (clickedButton === RESULT ? operateOutput : Number(DISPLAY.textContent));
-        updatedOperation = storedOperation;
-        switch (clickedButton) {
-          case PLUS:
-            storedOperation = PLUS;
-            break;
-          case MINUS:
-            storedOperation = MINUS;
-            break;
-          case TIMES:
-            storedOperation = TIMES;
-            break;
-          case OVER:
-            storedOperation = OVER;
-            break;
-          case DECIMAL:
-            break;
-          case RESULT:
-            storedOperation = null;
-            break;
-        }
-        shouldRenewDisplay = true;
-      }
+      operationInMemory = clickedOperation;
+      valueInMemory = displayValue;
+      operationInProgress = true;
+      displayValue = 0;
     }
   }
 
-  // Event listeners for buttons
-  NUMS.forEach((number) => {
-    number.addEventListener('click', populateDisplay); // iterate through each number button
+  // Event listeners
+  const NUM_BUTTONS = document.querySelectorAll('div.num');
+  NUM_BUTTONS.forEach((number) => {
+    number.addEventListener('click', buttonUpdate)
   });
 
-  ZERO_NUM.addEventListener('click', populateDisplay); // add same listener to 0
-
-  OPERATORS.forEach((button) => {
-    button.addEventListener('click', populateDisplay);
+  const FUNCTION_BUTTONS = document.querySelectorAll('div.function');
+  FUNCTION_BUTTONS.forEach((functionButton) => {
+    switch(functionButton.textContent) {
+      case CLEAR:
+        functionButton.addEventListener('click', clearDisplayValue);
+        break;
+      case PLUS:
+        functionButton.addEventListener('click', callDisplayOperation);
+        break;
+    }
   });
-
-  FLOAT.addEventListener('click', populateDisplay);
 }
 
-display();
+calculatorDisplay();
