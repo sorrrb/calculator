@@ -97,6 +97,8 @@ let calculatorDisplay = () => {
   let valueInMemory = 0;
   let operationInMemory;
   let operationInProgress = false;
+  let areComputationsActive = false;
+  let computedDisplayConstant;
 
   const DISPLAY = document.querySelector('div.display');
   DISPLAY.textContent = displayValue;
@@ -118,7 +120,7 @@ let calculatorDisplay = () => {
   let updateDisplayValue = (value, canResetDisplay) => {
     let appendValue = grabDisplayValue();
     let output = (canResetDisplay ? value : appendValue.toString() + value.toString());
-    displayValue = Number(output);
+    displayValue = ((output.toString()).length <= 12 ? Number(output) : (Number(output)).toPrecision(12));
     DISPLAY.textContent = displayValue;
   }
 
@@ -126,8 +128,10 @@ let calculatorDisplay = () => {
   let clearDisplayValue = () => {
     displayValue = 0;
     valueInMemory = 0;
+    computedDisplayConstant = 0;
     operationInMemory = null;
     operationInProgress = false;
+    areComputationsActive = false;
     DISPLAY.textContent = displayValue;
   }
 
@@ -138,7 +142,7 @@ let calculatorDisplay = () => {
     updateDisplayValue(buttonValue, isDisplayEmpty);
   }
 
-  // Callback to store display value and display operation
+  // Callback to store value/operation & update display if necessary
   let callDisplayOperation = e => {
     let clickedOperation = e.target.textContent;
     if (operationInProgress) {
@@ -156,6 +160,39 @@ let calculatorDisplay = () => {
     }
   }
 
+  // Callback to update display using stored value and operation
+
+  let callValuesComputed = e => {
+    if (areComputationsActive) {
+      let revisedComputedDisplay = operate(operationInMemory, valueInMemory, computedDisplayConstant);
+      valueInMemory = revisedComputedDisplay;
+      updateDisplayValue(revisedComputedDisplay, true);
+      operationInProgress = false;
+    }
+    else if (typeof(areComputationsActive) === 'object') {
+      return;
+    }
+    else {
+      let computedDisplay = operate(operationInMemory, valueInMemory, displayValue);
+      if (computedDisplay === String.fromCodePoint(0x1F921)) {
+        areComputationsActive = null;
+        DISPLAY.textContent = computedDisplay;
+        displayValue = 0;
+        valueInMemory = 0;
+        computedDisplayConstant = 0;
+        operationInMemory = null;
+        operationInProgress = false;
+      }
+      else {
+        valueInMemory = computedDisplay;
+        computedDisplayConstant = displayValue;
+        updateDisplayValue(computedDisplay, true);
+        operationInProgress = false;
+        areComputationsActive = true;
+      }
+    }
+  }
+
   // Event listeners
   const NUM_BUTTONS = document.querySelectorAll('div.num');
   NUM_BUTTONS.forEach((number) => {
@@ -170,6 +207,18 @@ let calculatorDisplay = () => {
         break;
       case PLUS:
         functionButton.addEventListener('click', callDisplayOperation);
+        break;
+      case MINUS:
+        functionButton.addEventListener('click', callDisplayOperation);
+        break;
+      case TIMES:
+        functionButton.addEventListener('click', callDisplayOperation);
+        break;
+      case OVER:
+        functionButton.addEventListener('click', callDisplayOperation);
+        break;
+      case RESULT:
+        functionButton.addEventListener('click', callValuesComputed);
         break;
     }
   });
