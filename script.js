@@ -128,6 +128,7 @@ let calculatorDisplay = () => {
     }
   }
   
+  // Helper function - removes comma(s) from string number/typecasts to number
   let removeCommas = (str) => {
     let arrayOfString = Array.from(str);
     while (arrayOfString.includes(',')) {
@@ -136,6 +137,8 @@ let calculatorDisplay = () => {
     let output = arrayOfString.join('');
     return Number(output);
   }
+
+  
 }
 
 calculatorDisplay();
