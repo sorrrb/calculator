@@ -137,8 +137,6 @@ let calculatorDisplay = () => {
     let output = arrayOfString.join('');
     return Number(output);
   }
-
-  
 }
 
 calculatorDisplay();
