@@ -91,7 +91,7 @@ let calculatorDisplay = () => {
   }
 
   const DISPLAY = document.querySelector('div.display');
-  DISPLAY.textContent = 0;
+  DISPLAY.textContent = 10;
 
   // For loop to add text content (numbers/symbols) to buttons
   let eachElement = DISPLAY.nextElementSibling;
@@ -101,7 +101,7 @@ let calculatorDisplay = () => {
   }
 
   // Helper function - adds commas to numbers displayed > 999
-  let composeCommas = (num) => {
+  let composeCommas = num => {
     let stringOfNum = num.toString();
     let arrayIndex;
     if (num < 1000) return num;
@@ -129,7 +129,7 @@ let calculatorDisplay = () => {
   }
   
   // Helper function - removes comma(s) from string number/typecasts to number
-  let removeCommas = (str) => {
+  let removeCommas = str => {
     let arrayOfString = Array.from(str);
     while (arrayOfString.includes(',')) {
       arrayOfString.splice(arrayOfString.indexOf(','), 1);
@@ -137,6 +137,33 @@ let calculatorDisplay = () => {
     let output = arrayOfString.join('');
     return Number(output);
   }
+
+  // Helper to callback functions - grabs display value
+  let grabDisplayValue = () => {
+    return (removeCommas(DISPLAY.textContent));
+  }
+
+  // Helper to callback functions - clears display value
+  let clearDisplayValue = () => {
+    DISPLAY.textContent = 0;
+  }
+
+  const BUTTONS = document.querySelectorAll('div.click');
+  BUTTONS.forEach((button) => {
+    if (button.classList.contains('num')) {
+      button.addEventListener('click', clearDisplayValue);
+    }
+    else if (button.classList.contains('operate')) {
+      button.addEventListener('click', (event) => {
+        console.log(event.target.textContent);
+      })
+    }
+    else if (button.classList.contains('function') && !(button.classList.contains('operate'))) {
+      button.addEventListener('click', (event) => {
+        console.log(event.target.textContent);
+      })
+    }
+  });
 }
 
 calculatorDisplay();
