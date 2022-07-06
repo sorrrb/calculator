@@ -148,30 +148,42 @@ let calculatorDisplay = () => {
     DISPLAY.textContent = 0;
   }
 
+  let activeDisplayValue = removeCommas(DISPLAY.textContent);
+  let storedDisplayValue;
+  let storedOperation;
+
   // Callback function - updates display value based off number of button clicked
   let updateDisplayValue = e => {
-    let pressedNumber = Number(e.target.textContent);
-    let currentDisplayValue = grabDisplayValue();
-    if ((pressedNumber !== 0) && (currentDisplayValue !== 0)) {
-      let appendValue = pressedNumber.toString();
-      currentDisplayValue += appendValue;
-      DISPLAY.textContent = composeCommas(currentDisplayValue);
+    let pressedButton = e.target.textContent;
+    let isNumber = !isNaN(pressedButton);
+    if (isNumber) {
+      let pressedNumber = Number(e.target.textContent);
+      let currentDisplayValue = grabDisplayValue();
+      if (((pressedNumber !== 0) && (currentDisplayValue !== 0)) || ((pressedNumber === 0) && (currentDisplayValue !== 0))) {
+        let appendValue = pressedNumber.toString();
+        currentDisplayValue += appendValue;
+        DISPLAY.textContent = composeCommas(currentDisplayValue);
+        activeDisplayValue = removeCommas(DISPLAY.textContent);
+      }
+      else if (((pressedNumber !== 0) && (currentDisplayValue === 0))) {
+        currentDisplayValue = pressedNumber;
+        DISPLAY.textContent = composeCommas(currentDisplayValue);
+        activeDisplayValue = removeCommas(DISPLAY.textContent);
+      }
     }
-    else if ((pressedNumber !== 0) && (currentDisplayValue === 0)) {
-      currentDisplayValue = pressedNumber;
-      DISPLAY.textContent = composeCommas(currentDisplayValue);
+    else {
+
     }
   }
 
+  // Event listener(s) for buttons
   const BUTTONS = document.querySelectorAll('div.click');
   BUTTONS.forEach((button) => {
     if (button.classList.contains('num')) {
       button.addEventListener('click', updateDisplayValue);
     }
     else if (button.classList.contains('operate')) {
-      button.addEventListener('click', (event) => {
-        console.log(event.target.textContent);
-      })
+      button.addEventListener('click', updateDisplayValue);
     }
     else if (button.classList.contains('function') && (!(button.classList.contains('operate')))) {
       switch(button.textContent) {
