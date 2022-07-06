@@ -125,5 +125,5 @@ div.click:hover {
 }
 
 .footer-icon:hover {
-  transform: rotate(720deg) skewX(5deg) skewY(5deg);
+  transform: rotate(720deg);
 }

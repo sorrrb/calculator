@@ -146,6 +146,7 @@ let calculatorDisplay = () => {
   // Helper to callback functions - clears display value
   let clearDisplayValue = () => {
     DISPLAY.textContent = 0;
+    DISPLAY.style.fontSize = `36px`;
   }
 
   let adjustDisplayText = () => {
