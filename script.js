@@ -91,7 +91,7 @@ let calculatorDisplay = () => {
   }
 
   const DISPLAY = document.querySelector('div.display');
-  DISPLAY.textContent = 10;
+  DISPLAY.textContent = 0;
 
   // For loop to add text content (numbers/symbols) to buttons
   let eachElement = DISPLAY.nextElementSibling;
@@ -148,20 +148,41 @@ let calculatorDisplay = () => {
     DISPLAY.textContent = 0;
   }
 
+  // Callback function - updates display value based off number of button clicked
+  let updateDisplayValue = e => {
+    let pressedNumber = Number(e.target.textContent);
+    let currentDisplayValue = grabDisplayValue();
+    if ((pressedNumber !== 0) && (currentDisplayValue !== 0)) {
+      let appendValue = pressedNumber.toString();
+      currentDisplayValue += appendValue;
+      DISPLAY.textContent = composeCommas(currentDisplayValue);
+    }
+    else if ((pressedNumber !== 0) && (currentDisplayValue === 0)) {
+      currentDisplayValue = pressedNumber;
+      DISPLAY.textContent = composeCommas(currentDisplayValue);
+    }
+  }
+
   const BUTTONS = document.querySelectorAll('div.click');
   BUTTONS.forEach((button) => {
     if (button.classList.contains('num')) {
-      button.addEventListener('click', clearDisplayValue);
+      button.addEventListener('click', updateDisplayValue);
     }
     else if (button.classList.contains('operate')) {
       button.addEventListener('click', (event) => {
         console.log(event.target.textContent);
       })
     }
-    else if (button.classList.contains('function') && !(button.classList.contains('operate'))) {
-      button.addEventListener('click', (event) => {
-        console.log(event.target.textContent);
-      })
+    else if (button.classList.contains('function') && (!(button.classList.contains('operate')))) {
+      switch(button.textContent) {
+        case CLEAR:
+          button.addEventListener('click', clearDisplayValue);
+          break;
+        default:
+          button.addEventListener('click', (event) => {
+            console.log(grabDisplayValue());
+          });
+      }
     }
   });
 }
