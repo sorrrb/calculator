@@ -104,7 +104,7 @@ let calculatorDisplay = () => {
   let composeCommas = num => {
     let stringOfNum = num.toString();
     let arrayIndex;
-    if (num < 1000) return num;
+    if (num < 1000) return stringOfNum;
     else {
       let arrayHolder = Array.from(stringOfNum);
       let numCommas = Math.floor((stringOfNum.length - 1)/3);
@@ -148,6 +148,41 @@ let calculatorDisplay = () => {
     DISPLAY.textContent = 0;
   }
 
+  let adjustDisplayText = () => {
+    let displayLength = DISPLAY.textContent.length;
+    switch(displayLength) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+      case 10:
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+      case 15:
+      case 16:
+        DISPLAY.style.fontSize = `32px`;
+        break;
+      case 17:
+        DISPLAY.style.fontSize = `30px`;
+        break;
+      case 18:
+      case 19:
+        DISPLAY.style.fontSize = `28px`;
+        break;
+      case 20:
+      default:
+        DISPLAY.style.fontSize = `26px`;
+    }
+  }
+
   let activeDisplayValue = removeCommas(DISPLAY.textContent);
   let storedDisplayValue;
   let storedOperation;
@@ -159,16 +194,22 @@ let calculatorDisplay = () => {
     if (isNumber) {
       let pressedNumber = Number(e.target.textContent);
       let currentDisplayValue = grabDisplayValue();
-      if (((pressedNumber !== 0) && (currentDisplayValue !== 0)) || ((pressedNumber === 0) && (currentDisplayValue !== 0))) {
+      if (((pressedNumber !== 0) && (currentDisplayValue !== 0)) ||
+          ((pressedNumber === 0) && (currentDisplayValue !== 0))) {
         let appendValue = pressedNumber.toString();
-        currentDisplayValue += appendValue;
-        DISPLAY.textContent = composeCommas(currentDisplayValue);
-        activeDisplayValue = removeCommas(DISPLAY.textContent);
+        if ((composeCommas(currentDisplayValue)).length <= 20) {
+          currentDisplayValue += appendValue;
+          DISPLAY.textContent = composeCommas(currentDisplayValue);
+          activeDisplayValue = removeCommas(DISPLAY.textContent);
+          adjustDisplayText();
+        }
+        else return;
       }
       else if (((pressedNumber !== 0) && (currentDisplayValue === 0))) {
         currentDisplayValue = pressedNumber;
         DISPLAY.textContent = composeCommas(currentDisplayValue);
         activeDisplayValue = removeCommas(DISPLAY.textContent);
+        adjustDisplayText();
       }
     }
     else {
