@@ -209,6 +209,11 @@ let calculatorDisplay = () => {
     }
   }
 
+  let checkOperationActive = () => {
+    const ACTIVE_OPERATIONS = document.querySelectorAll('div.active');
+    return ((Array.from(ACTIVE_OPERATIONS)).length !== 0 ? true : false);
+  }
+
   // Callback function - updates display value based off number of button clicked
   let updateDisplayValue = e => {
     let pressedButton = e.target.textContent;
@@ -236,6 +241,7 @@ let calculatorDisplay = () => {
     }
 
     else {
+      if (checkOperationActive() === true) return;
       if (pressedButton !== RESULT) {
         isRepeatingResult = false;
         if (e.target.classList.contains(`operate`)) {
