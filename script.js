@@ -257,8 +257,11 @@ let calculatorDisplay = () => {
           activeDisplayValue = removeCommas(DISPLAY.textContent);
           adjustDisplayText();
         }
-        else {
-          return;
+        else if (pressedButton === PERCENT) {
+          currentDisplayValue = (removeCommas(DISPLAY.textContent) / 100);
+          DISPLAY.textContent = composeCommas(currentDisplayValue);
+          activeDisplayValue = removeCommas(DISPLAY.textContent);
+          adjustDisplayText();
         }
       }
       else {
@@ -289,10 +292,9 @@ let calculatorDisplay = () => {
         case INVERT:
           button.addEventListener('click', updateDisplayValue);
           break;
-        default:
-          button.addEventListener('click', (event) => {
-            console.log(grabDisplayValue());
-          });
+        case PERCENT:
+          button.addEventListener('click', updateDisplayValue);
+          break;
       }
     }
   });
