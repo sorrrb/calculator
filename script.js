@@ -91,7 +91,14 @@ let calculatorDisplay = () => {
   }
 
   const DISPLAY = document.querySelector('div.display');
-  DISPLAY.textContent = 0;
+
+  let activeDisplayValue = 0;
+  let storedDisplayValue;
+  let storedOperation;
+  let currentDisplayValue;
+  let isRepeatingResult = false;
+
+  DISPLAY.textContent = activeDisplayValue;
 
   // For loop to add text content (numbers/symbols) to buttons
   let eachElement = DISPLAY.nextElementSibling;
@@ -150,6 +157,7 @@ let calculatorDisplay = () => {
     storedDisplayValue = 0;
     currentDisplayValue = 0;
     storedOperation = null;
+    isRepeatingResult = false
     toggleActiveButtons();
     DISPLAY.style.fontSize = `36px`;
   }
@@ -201,11 +209,6 @@ let calculatorDisplay = () => {
     }
   }
 
-  let activeDisplayValue = removeCommas(DISPLAY.textContent);
-  let storedDisplayValue;
-  let storedOperation;
-  let currentDisplayValue;
-
   // Callback function - updates display value based off number of button clicked
   let updateDisplayValue = e => {
     let pressedButton = e.target.textContent;
@@ -234,6 +237,7 @@ let calculatorDisplay = () => {
 
     else {
       if (pressedButton !== RESULT) {
+        isRepeatingResult = false;
         if (e.target.classList.contains(`operate`)) {
           if ((typeof(storedDisplayValue) !== 'undefined') && (storedDisplayValue !== 0)) {
             storedDisplayValue = operate(storedOperation, storedDisplayValue, activeDisplayValue);
@@ -265,11 +269,23 @@ let calculatorDisplay = () => {
         }
       }
       else {
-        let displayResult = operate(storedOperation, storedDisplayValue, activeDisplayValue);
-        DISPLAY.textContent = composeCommas(displayResult);
-        activeDisplayValue = removeCommas(DISPLAY.textContent);
-        adjustDisplayText();
-        toggleActiveButtons();
+        if (isRepeatingResult) {
+          activeDisplayValue = operate(storedOperation, storedDisplayValue, activeDisplayValue);
+          DISPLAY.textContent = composeCommas(activeDisplayValue);
+          adjustDisplayText();
+          toggleActiveButtons();
+          return;
+        }
+        while (!isRepeatingResult) {
+          let displayResult = operate(storedOperation, storedDisplayValue, activeDisplayValue);
+          storedDisplayValue = activeDisplayValue;
+          DISPLAY.textContent = composeCommas(displayResult);
+          activeDisplayValue = removeCommas(DISPLAY.textContent);
+          adjustDisplayText();
+          toggleActiveButtons();
+          isRepeatingResult = true;
+          return;
+        }
       }
     }
   }
