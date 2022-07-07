@@ -26,9 +26,9 @@ div.calculator {
   grid-template-columns: [first] 100px [second] 100px [third] 100px [fourth] 100px;
   grid-template-rows: [row1] 100px [row2] 100px [row3] 100px [row4] 100px [row5] 100px [row6] 100px;
 
-  background-color: darkgray;
+  background-color: #B7CADB;
   border-radius: 16px;
-  border: 2px solid rgba(205, 205, 205, 1);
+  border: 4px solid #7C99AC;
   margin-top: 15vh;
 
   -webkit-box-shadow: 0px 2px 12px 2px rgba(100, 100, 100, 1), 2px 4px 12px 4px rgba(100, 100, 100, 1);
@@ -42,7 +42,7 @@ div.display {
 
   background-color: hsl(0, 0%, 93%);
   border-radius: 16px;
-  border: 2px solid gray;
+  border: 3px solid #7C99AC;
 
   display: flex;
   justify-content: flex-end;
@@ -62,8 +62,8 @@ div.click {
   font-size: 40px;
   margin: 6px;
 
-  background-color: gray;
-  border: 2px solid hsl(0, 0%, 88%);
+  background-color: #DFD3C3;
+  border: 2px solid #7C99AC;
   border-radius: 50%;
 }
 
@@ -80,18 +80,18 @@ div.zero {
 }
 
 div.function {
-  background-color: hsla(0, 5%, 70%, 0.9);
+  background-color: #C3B091;
+  /* #C3B091; */
 }
 
 div.operate {
-  background-color: hsl(25, 80%, 60%);
+  background-color: #94b49f7c;
 }
 
-div.active-operate {
-  background-color: black;
-  border: 2px solid hsl(25, 80%, 80%);
-  color: hsl(25, 80%, 60%);
-  transition: backgroundColor 100ms, border 50ms;
+div.active {
+  background-color: #7b9c87;
+  border: 2px solid #586b79;
+  color: whitesmoke;
 }
 
 div.click:hover {
@@ -100,14 +100,15 @@ div.click:hover {
 
 .footer {
   background-color: hsl(60, 15%, 55%);
-  color: hsl(0, 0%, 22%);
+  color: #404f58;
   text-align: center;
   font-size: 18px;
+  font-weight: 600;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
   width: 100%;
   padding: 16px 0;
