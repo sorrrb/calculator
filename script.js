@@ -104,7 +104,7 @@ let calculatorDisplay = () => {
   let composeCommas = num => {
     let stringOfNum = num.toString();
     let arrayIndex;
-    if (num < 1000) return stringOfNum;
+    if (Math.abs(num) < 1000) return stringOfNum;
     else {
       let arrayHolder = Array.from(stringOfNum);
       let numCommas = Math.floor((stringOfNum.length - 1)/3);
@@ -146,7 +146,19 @@ let calculatorDisplay = () => {
   // Helper to callback functions - clears display value
   let clearDisplayValue = () => {
     DISPLAY.textContent = 0;
+    activeDisplayValue = 0;
+    storedDisplayValue = 0;
+    currentDisplayValue = 0;
+    storedOperation = null;
     DISPLAY.style.fontSize = `36px`;
+  }
+  
+  // Helper to callback functions - finds active operation buttons, if any
+  let toggleActiveButtons = () => {
+    const ACTIVE_BUTTONS = document.querySelectorAll(`div.active`);
+    ACTIVE_BUTTONS.forEach((button) => {
+      button.classList.toggle(`active`);
+    });
   }
 
   let adjustDisplayText = () => {
@@ -191,6 +203,7 @@ let calculatorDisplay = () => {
   let activeDisplayValue = removeCommas(DISPLAY.textContent);
   let storedDisplayValue;
   let storedOperation;
+  let currentDisplayValue;
 
   // Callback function - updates display value based off number of button clicked
   let updateDisplayValue = e => {
@@ -198,7 +211,7 @@ let calculatorDisplay = () => {
     let isNumber = !isNaN(pressedButton);
     if (isNumber) {
       let pressedNumber = Number(e.target.textContent);
-      let currentDisplayValue = grabDisplayValue();
+      currentDisplayValue = (typeof(currentDisplayValue) === 'object' ? 0 : grabDisplayValue());
       if (((pressedNumber !== 0) && (currentDisplayValue !== 0)) ||
           ((pressedNumber === 0) && (currentDisplayValue !== 0))) {
         let appendValue = pressedNumber.toString();
@@ -218,9 +231,32 @@ let calculatorDisplay = () => {
       }
     }
     else {
-
+      if (pressedButton !== RESULT) {
+        if (e.target.classList.contains(`operate`)) {
+          storedDisplayValue = activeDisplayValue;
+          storedOperation = pressedButton;
+          e.target.classList.toggle(`active`);
+          currentDisplayValue = null;
+        }
+        else if (pressedButton === INVERT) {
+          currentDisplayValue = (0 - removeCommas(DISPLAY.textContent))
+          DISPLAY.textContent = composeCommas(currentDisplayValue);
+          activeDisplayValue = removeCommas(DISPLAY.textContent);
+          adjustDisplayText();
+        }
+        else {
+          return;
+        }
+      }
+      else {
+        let displayResult = operate(storedOperation, storedDisplayValue, activeDisplayValue);
+        DISPLAY.textContent = composeCommas(displayResult);
+        adjustDisplayText();
+        toggleActiveButtons();
+      }
     }
   }
+
 
   // Event listener(s) for buttons
   const BUTTONS = document.querySelectorAll('div.click');
@@ -235,6 +271,9 @@ let calculatorDisplay = () => {
       switch(button.textContent) {
         case CLEAR:
           button.addEventListener('click', clearDisplayValue);
+          break;
+        case INVERT:
+          button.addEventListener('click', updateDisplayValue);
           break;
         default:
           button.addEventListener('click', (event) => {

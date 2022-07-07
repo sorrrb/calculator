@@ -26,7 +26,7 @@ div.calculator {
   grid-template-columns: [first] 100px [second] 100px [third] 100px [fourth] 100px;
   grid-template-rows: [row1] 100px [row2] 100px [row3] 100px [row4] 100px [row5] 100px [row6] 100px;
 
-  background-color: #B7CADB;
+  background-color: hsl(195, 5%, 80%);
   border-radius: 16px;
   border: 4px solid #7C99AC;
   margin-top: 15vh;
@@ -81,7 +81,6 @@ div.zero {
 
 div.function {
   background-color: #C3B091;
-  /* #C3B091; */
 }
 
 div.operate {
