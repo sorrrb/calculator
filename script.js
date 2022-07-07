@@ -167,20 +167,24 @@ let calculatorDisplay = () => {
       case 12:
       case 13:
       case 14:
+        DISPLAY.style.fontSize = `36px`;
+        break;
       case 15:
-      case 16:
         DISPLAY.style.fontSize = `32px`;
         break;
+      case 16:
       case 17:
         DISPLAY.style.fontSize = `30px`;
         break;
       case 18:
-      case 19:
         DISPLAY.style.fontSize = `28px`;
+        break;
+      case 19:
+        DISPLAY.style.fontSize = `26px`;
         break;
       case 20:
       default:
-        DISPLAY.style.fontSize = `26px`;
+        DISPLAY.style.fontSize = `24px`;
     }
   }
 
