@@ -150,6 +150,7 @@ let calculatorDisplay = () => {
     storedDisplayValue = 0;
     currentDisplayValue = 0;
     storedOperation = null;
+    toggleActiveButtons();
     DISPLAY.style.fontSize = `36px`;
   }
   
@@ -230,16 +231,28 @@ let calculatorDisplay = () => {
         adjustDisplayText();
       }
     }
+
     else {
       if (pressedButton !== RESULT) {
         if (e.target.classList.contains(`operate`)) {
-          storedDisplayValue = activeDisplayValue;
-          storedOperation = pressedButton;
-          e.target.classList.toggle(`active`);
-          currentDisplayValue = null;
+          if ((typeof(storedDisplayValue) !== 'undefined') && (storedDisplayValue !== 0)) {
+            storedDisplayValue = operate(storedOperation, storedDisplayValue, activeDisplayValue);
+            storedOperation = pressedButton;
+            DISPLAY.textContent = composeCommas(storedDisplayValue);
+            toggleActiveButtons();
+            e.target.classList.toggle(`active`);
+            currentDisplayValue = null;
+          }
+          else {
+            storedDisplayValue = activeDisplayValue;
+            storedOperation = pressedButton;
+            e.target.classList.toggle(`active`);
+            currentDisplayValue = null;
+          }
         }
+        
         else if (pressedButton === INVERT) {
-          currentDisplayValue = (0 - removeCommas(DISPLAY.textContent))
+          currentDisplayValue = (0 - removeCommas(DISPLAY.textContent));
           DISPLAY.textContent = composeCommas(currentDisplayValue);
           activeDisplayValue = removeCommas(DISPLAY.textContent);
           adjustDisplayText();
@@ -251,6 +264,7 @@ let calculatorDisplay = () => {
       else {
         let displayResult = operate(storedOperation, storedDisplayValue, activeDisplayValue);
         DISPLAY.textContent = composeCommas(displayResult);
+        activeDisplayValue = removeCommas(DISPLAY.textContent);
         adjustDisplayText();
         toggleActiveButtons();
       }
