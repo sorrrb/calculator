@@ -107,7 +107,7 @@ let display = () => {
   }
 
   function grabDisplay() {
-    return parseInt(calcInterface.textContent);
+    return parseInt((calcInterface.textContent).replaceAll(',', ''));
   }
 
   function updateDisplay(e) {
