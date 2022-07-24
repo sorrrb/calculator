@@ -87,74 +87,30 @@ let display = () => {
 
   // CALLBACK FUNCTIONS/HELPER FUNCTIONS FOR DISPLAY
 
-  let firstOperand = null;
-  let secondOperand = null;
-  let storedOperation = null;
-  let isAwaitingUpdate = null;
-  
-  function resetDisplay() {
+  let resetDisplay = () => {
     calcInterface.textContent = 0;
-    firstOperand = null;
-    secondOperand = null;
-    storedOperation = null;
-    isAwaitingUpdate = null;
-    hasRecentlyComputed = null;
   }
 
-  function sendToDisplay(value) {
-    let displayValue = parseInt(value);
-    calcInterface.textContent = displayValue.toLocaleString();
+  let getDisplayValue = () => {
+    let numConvert = ((calcInterface.textContent).toLocaleString()).replaceAll(',', '');
+    return Number(numConvert);
   }
 
-  function grabDisplay() {
-    return parseInt((calcInterface.textContent).replaceAll(',', ''));
+  let setDisplayValue = value => {
+    let stringConvert = Number(value).toLocaleString();
+    calcInterface.textContent = stringConvert;
   }
 
-  function updateDisplay(e) {
-    let clickedButton = e.target.textContent;
-    if (isNaN(parseInt(clickedButton))) {
-      isAwaitingUpdate = true;
-      if (clickedButton === '=') {
-        if (storedOperation === null) return;
-        else if (hasRecentlyComputed) {
-          sendToDisplay(operate(firstOperand, secondOperand, storedOperation));
-          firstOperand = grabDisplay();
-          hasRecentlyComputed = true;
-          return;
-        }
-        else {
-          secondOperand = grabDisplay();
-          sendToDisplay(operate(firstOperand, secondOperand, storedOperation));
-          firstOperand = grabDisplay();
-          hasRecentlyComputed = true;
-          return;
-        }
-      }
-      else if (storedOperation === null) {
-        storedOperation = clickedButton
-        firstOperand = grabDisplay();
-        hasRecentlyComputed = false;
-        return;
-      }
-      else {
-        secondOperand = grabDisplay();
-        sendToDisplay(operate(firstOperand, secondOperand, storedOperation));
-        storedOperation = clickedButton;
-        firstOperand = grabDisplay();
-        hasRecentlyComputed = false;
-        return;
-      }
+  let updateDisplay = (e) => {
+    pressedButton = e.target.textContent;
+    let isNumberButton = Number(pressedButton);
+    if (Number.isNaN(isNumberButton)) { // IF BUTTON IS NOT NUMERIC
+      return;
     }
-    else {
-      let currentDisplay = grabDisplay();
-      if (currentDisplay === 0 || isAwaitingUpdate === true) {
-        sendToDisplay(e.target.textContent);
-        isAwaitingUpdate = false;
-        return;
-      }
-      let valueToDisplay = parseInt((calcInterface.textContent).replaceAll(',', ''));
-      valueToDisplay += e.target.textContent;
-      sendToDisplay(valueToDisplay);
+    else if (!Number.isNaN(isNumberButton)) { // IF BUTTON IS NUMERIC
+      let currentDisplay = getDisplayValue();
+      let updatedValue = (currentDisplay === 0 ? pressedButton : currentDisplay += pressedButton);
+      setDisplayValue(updatedValue);
     }
   }
 

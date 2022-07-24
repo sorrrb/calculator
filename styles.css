@@ -64,6 +64,10 @@ body {
   margin: 12px;
 }
 
+.button:hover {
+  cursor: pointer;
+}
+
 .zero {
   border-radius: 72px;
   grid-column: 1 / span 2;
