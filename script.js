@@ -87,8 +87,19 @@ let display = () => {
 
   // CALLBACK FUNCTIONS/HELPER FUNCTIONS FOR DISPLAY
 
+  let storedValue = null;
+  let storedOperation = null;
+  let shouldResetDisplay = null;
+  let hasRecentlyComputed = null;
+  let staticOperand = null;
+
   let resetDisplay = () => {
     calcInterface.textContent = 0;
+    storedValue = null;
+    storedOperation = null;
+    shouldResetDisplay = null;
+    hasRecentlyComputed = null;
+    staticOperand = null;
   }
 
   let getDisplayValue = () => {
@@ -101,15 +112,48 @@ let display = () => {
     calcInterface.textContent = stringConvert;
   }
 
-  let updateDisplay = (e) => {
+  let updateDisplay = e => {
     pressedButton = e.target.textContent;
     let isNumberButton = Number(pressedButton);
     if (Number.isNaN(isNumberButton)) { // IF BUTTON IS NOT NUMERIC
-      return;
+      if (pressedButton === '=') {
+        if (storedOperation === null) return;
+        if (shouldResetDisplay) return;
+        if (hasRecentlyComputed) {
+          let repeatedComputation = operate(storedValue, staticOperand, storedOperation);
+          storedValue = repeatedComputation;
+          setDisplayValue(repeatedComputation);
+          return;
+        }
+        staticOperand = getDisplayValue();
+        let computedResult = operate(storedValue, getDisplayValue(), storedOperation);
+        storedValue = computedResult;
+        setDisplayValue(computedResult);
+        hasRecentlyComputed = true;
+      }
+      else if (storedValue === null || hasRecentlyComputed) {
+        storedValue = getDisplayValue();
+        storedOperation = (pressedButton === '=' ? null : pressedButton);
+        shouldResetDisplay = true;
+        hasRecentlyComputed = false;
+        return;
+      }
+      else if (storedValue !== null && storedValue !== 0) {
+        let computedResult = operate(storedValue, getDisplayValue(), storedOperation);
+        storedValue = computedResult;
+        storedOperation = (pressedButton === '=' ? null : pressedButton);
+        shouldResetDisplay = true;
+        hasRecentlyComputed = false;
+        setDisplayValue(computedResult);
+        return;
+      }
     }
     else if (!Number.isNaN(isNumberButton)) { // IF BUTTON IS NUMERIC
       let currentDisplay = getDisplayValue();
-      let updatedValue = (currentDisplay === 0 ? pressedButton : currentDisplay += pressedButton);
+      let updatedValue = ((currentDisplay === 0) || (shouldResetDisplay ===
+            true) ? pressedButton : currentDisplay += pressedButton);
+      shouldResetDisplay = false;
+      hasRecentlyComputed = false;
       setDisplayValue(updatedValue);
     }
   }
