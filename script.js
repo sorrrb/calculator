@@ -104,12 +104,29 @@ let display = () => {
 
   let getDisplayValue = () => {
     let numConvert = ((calcInterface.textContent).toLocaleString()).replaceAll(',', '');
+    if ((calcInterface.textContent).includes('.')) {
+      return numConvert;
+    }
     return Number(numConvert);
   }
 
   let setDisplayValue = value => {
+    let displayCoerced = value.toString();
+    if (displayCoerced.includes('.')) {
+      calcInterface.textContent = displayCoerced;
+      return;
+    }
     let stringConvert = Number(value).toLocaleString();
     calcInterface.textContent = stringConvert;
+  }
+
+  let checkFloatStatus = () => {
+    let isValueFloating = (calcInterface.textContent).toString();
+    if (isValueFloating.includes('.')) {
+      isValueFloating = true;
+    }
+    else isValueFloating = false;
+    return isValueFloating;
   }
 
   let updateDisplay = e => {
@@ -130,6 +147,18 @@ let display = () => {
         storedValue = computedResult;
         setDisplayValue(computedResult);
         hasRecentlyComputed = true;
+      }
+      else if (pressedButton === '±') {
+        setDisplayValue(getDisplayValue() * -1);
+      }
+      else if (pressedButton === '%') {
+        setDisplayValue(getDisplayValue() / 100);
+      }
+      else if (pressedButton === '.') {
+        if (checkFloatStatus()) return;
+        let appendDecimal = (getDisplayValue()).toLocaleString();
+        appendDecimal += '.';
+        setDisplayValue(appendDecimal);
       }
       else if (storedValue === null || hasRecentlyComputed) {
         storedValue = getDisplayValue();
@@ -165,13 +194,13 @@ let display = () => {
           button.addEventListener('click', resetDisplay);
           break;
         case '±':
-          button.addEventListener('click', resetDisplay);
+          button.addEventListener('click', updateDisplay);
           break;
         case '%':
-          button.addEventListener('click', resetDisplay);
+          button.addEventListener('click', updateDisplay);
           break;
         case '.':
-          button.addEventListener('click', resetDisplay);
+          button.addEventListener('click', updateDisplay);
           break;
         default:
           button.addEventListener('click', updateDisplay);
@@ -182,7 +211,7 @@ let display = () => {
 
 
   /*
-  √ ( ) ^ 
+  √ ( ) ^ backspace
   */
 
   calcInterface.textContent = 0;
