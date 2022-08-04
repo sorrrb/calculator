@@ -1,220 +1,164 @@
-let display = () => {
+let calcDisplay = () => {
+  
+  const userDisplay = document.querySelector('div.display');
+  const numDisplay = document.querySelector('div.output');
+  const calcGrid = document.querySelector('div.interface');
 
-  const calcWrapper = document.querySelector('div.calc-wrapper');
-  const calcInterface = document.createElement('div');
-  calcInterface.classList.add('display');
-  calcWrapper.appendChild(calcInterface);
+  const GRID_COLS = 5;
+  const GRID_ROWS = 7;
+  const PI = 3.14159265359;
+  const EULER = 2.71828182846;
 
-  // CALC GRID CONSTANTS
-  const CALC_COLS = 4;
-  const CALC_ROWS = 6;
-
-  // NESTED FOR LOOPS TO CREATE/APPEND BUTTONS TO DISPLAY GRID
-  for (let i = 1; i < CALC_ROWS; i++) {
-    for (let j = 1; j <= CALC_COLS; j++) {
-      if ((i === 5) && (j === 1)) {
-        const calcZeroButton = document.createElement('div');
-        calcZeroButton.classList.add('button', 'number', 'zero');
-        calcWrapper.appendChild(calcZeroButton);
-        j++;
+  for (let i = 0; i < GRID_ROWS; i++) {
+    for (let j = 0; j < GRID_COLS; j++) {
+      const gridButton = document.createElement('div');
+      if (i > 2 && i < 7) {
+        switch(j) {
+          case 1:
+            gridButton.classList.add('num');
+            break;
+          case 2:
+            gridButton.classList.add('num');
+            break;
+          case 3:
+            gridButton.classList.add('num');
+            break;
+          default:
+            break;
+        }
+        if (i === 6 && j > 1) gridButton.classList.remove('num');
       }
-      else if (((i < 5) && (i > 1)) && (j < 4)) {
-        const calcNumButton = document.createElement('div');
-        calcNumButton.classList.add('button', 'number');
-        calcWrapper.appendChild(calcNumButton);
-      }
-      else if ((i === 1) && (j < 4)) {
-        const calcFuncButton = document.createElement('div');
-        calcFuncButton.classList.add('button', 'function');
-        calcWrapper.appendChild(calcFuncButton);
-      }
-      else if ((j === 4)) {
-        const calcOperatorButton = document.createElement('div');
-        calcOperatorButton.classList.add('button', 'operation');
-        calcWrapper.appendChild(calcOperatorButton);
-      }
-      else if ((i === 5) && (j === 3)) {
-        const calcButton = document.createElement('div');
-        calcButton.classList.add('button', 'decimal');
-        calcWrapper.appendChild(calcButton);
-      }
+      if (!gridButton.classList.contains('num')) gridButton.classList.add('function');
+      gridButton.classList.add('button');
+      calcGrid.appendChild(gridButton);
     }
   }
 
-  // CALC BUTTON TEXT CONSTANTS
-  const buttonTextValues = ['AC', '±', '%', '÷', '×', '-', '+', '='];
-  const buttonNumberValues = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0];
-  
-  // BUTTON VALUES FOR NUMBERS/TEXT
-  const numberButtons = document.querySelectorAll('div.number');
-  for (const entry of numberButtons.entries()) {
-    entry[1].textContent = buttonNumberValues[entry[0]];
+  const numValueArray = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0];
+  const numButtons = document.querySelectorAll('div.num');
+  for (let i = 0; i < numValueArray.length; i++) {
+    (numButtons.item(i)).textContent = numValueArray[i];
   }
 
-  const textButtons = document.querySelectorAll('div.function, div.operation');
-  for (const entry of textButtons.entries()) {
-    entry[1].textContent = buttonTextValues[entry[0]];
+  const functionValueArray = ['2nd', '(', ')', 'del', 'clear',
+    '^', 'sin', 'cos', 'tan', '÷', 'x!', 'x²', '1/x', '√', '×',
+    'π', '-', 'e', '+', 'log', '<  >', 'ln', '.', '(-)', '='];
+  const functionButtons = document.querySelectorAll('div.function');
+  for (let i = 0; i < functionValueArray.length; i++) {
+    (functionButtons.item(i)).textContent = functionValueArray[i];
   }
 
-  // CONSTANT/VALUE FOR DECIMAL BUTTON
-  const decimalButton = document.querySelector('div.decimal');
-  decimalButton.textContent = '.';
+  const switchFuncButton = document.querySelector('div.function');
+  switchFuncButton.classList.add('switch');
 
-  // MATH HELPER FUNCTIONS
-  let add = (firstNum, secondNum) => firstNum + secondNum;
-  let subtract = (firstNum, secondNum) => firstNum - secondNum;
-  let multiply = (firstNum, secondNum) => firstNum * secondNum;
-  let divide = (firstNum, secondNum) => firstNum / secondNum;
+  let add = (a,b) => a + b;
+  let subtract = (a,b) => a - b;
+  let multiply = (a,b) => a * b;
+  let divide = (a,b) => a / b;
 
-  let operate = (firstNum, secondNum, operator) => {
-    let output;
-    switch(operator) {
+  let operate = (firstOperand, secondOperand, operator) => {
+    let result;
+    switch (operator) {
       case '+':
-        output = add(firstNum, secondNum);
+        result = add(firstOperand, secondOperand);
         break;
       case '-':
-        output = subtract(firstNum, secondNum);
+        result = subtract(firstOperand, secondOperand);
         break;
       case '×':
-        output = multiply(firstNum, secondNum);
+        result = multiply(firstOperand, secondOperand);
         break;
       case '÷':
-        output = divide(firstNum, secondNum);
+        result = divide(firstOperand, secondOperand);
         break;
     }
-    return output;
+    return result;
   }
 
-  // CALLBACK FUNCTIONS/HELPER FUNCTIONS FOR DISPLAY
+  let activeDisplayValue = 0;
+  numDisplay.textContent = activeDisplayValue;
 
-  let storedValue = null;
-  let storedOperation = null;
-  let shouldResetDisplay = null;
-  let hasRecentlyComputed = null;
-  let staticOperand = null;
+  let valueInMemory = null;
+  let operatorInMemory = null;
+  let isDisplayInactive = true;
+  let isRepeatedExpression = false;
+  let hasRecentlyComputed = false;
 
   let resetDisplay = () => {
-    calcInterface.textContent = 0;
-    storedValue = null;
-    storedOperation = null;
-    shouldResetDisplay = null;
-    hasRecentlyComputed = null;
-    staticOperand = null;
-  }
-
-  let getDisplayValue = () => {
-    let numConvert = ((calcInterface.textContent).toLocaleString()).replaceAll(',', '');
-    if ((calcInterface.textContent).includes('.')) {
-      return numConvert;
-    }
-    return Number(numConvert);
+    activeDisplayValue = 0;
+    numDisplay.textContent = activeDisplayValue;
+    valueInMemory = null;
+    operatorInMemory = null;
+    isDisplayInactive = true;
+    isRepeatedExpression = false;
+    hasRecentlyComputed = false;
   }
 
   let setDisplayValue = value => {
-    let displayCoerced = value.toString();
-    if (displayCoerced.includes('.')) {
-      calcInterface.textContent = displayCoerced;
-      return;
-    }
-    let stringConvert = Number(value).toLocaleString();
-    calcInterface.textContent = stringConvert;
-  }
-
-  let checkFloatStatus = () => {
-    let isValueFloating = (calcInterface.textContent).toString();
-    if (isValueFloating.includes('.')) {
-      isValueFloating = true;
-    }
-    else isValueFloating = false;
-    return isValueFloating;
+    activeDisplayValue = Number(value);
+    let formatValue = (activeDisplayValue).toLocaleString();
+    numDisplay.textContent = formatValue;
+    isDisplayInactive = false;
   }
 
   let updateDisplay = e => {
-    pressedButton = e.target.textContent;
-    let isNumberButton = Number(pressedButton);
-    if (Number.isNaN(isNumberButton)) { // IF BUTTON IS NOT NUMERIC
-      if (pressedButton === '=') {
-        if (storedOperation === null) return;
-        if (shouldResetDisplay) return;
-        if (hasRecentlyComputed) {
-          let repeatedComputation = operate(storedValue, staticOperand, storedOperation);
-          storedValue = repeatedComputation;
-          setDisplayValue(repeatedComputation);
-          return;
-        }
-        staticOperand = getDisplayValue();
-        let computedResult = operate(storedValue, getDisplayValue(), storedOperation);
-        storedValue = computedResult;
-        setDisplayValue(computedResult);
-        hasRecentlyComputed = true;
-      }
-      else if (pressedButton === '±') {
-        setDisplayValue(getDisplayValue() * -1);
-      }
-      else if (pressedButton === '%') {
-        setDisplayValue(getDisplayValue() / 100);
-      }
-      else if (pressedButton === '.') {
-        if (checkFloatStatus()) return;
-        let appendDecimal = (getDisplayValue()).toLocaleString();
-        appendDecimal += '.';
-        setDisplayValue(appendDecimal);
-      }
-      else if (storedValue === null || hasRecentlyComputed) {
-        storedValue = getDisplayValue();
-        storedOperation = (pressedButton === '=' ? null : pressedButton);
-        shouldResetDisplay = true;
-        hasRecentlyComputed = false;
-        return;
-      }
-      else if (storedValue !== null && storedValue !== 0) {
-        let computedResult = operate(storedValue, getDisplayValue(), storedOperation);
-        storedValue = computedResult;
-        storedOperation = (pressedButton === '=' ? null : pressedButton);
-        shouldResetDisplay = true;
-        hasRecentlyComputed = false;
-        setDisplayValue(computedResult);
-        return;
-      }
+    let buttonPressed = e.target;
+    hasRecentlyComputed = isRepeatedExpression;
+    if (buttonPressed.textContent !== '=') isRepeatedExpression = false;
+    if (buttonPressed.classList.contains('num')) {
+      let valuePressed = buttonPressed.textContent;
+      let newDisplayValue = (activeDisplayValue === 0 ? String(valuePressed) : String(activeDisplayValue) + String(valuePressed));
+      if (isDisplayInactive) newDisplayValue = String(valuePressed);
+      setDisplayValue(newDisplayValue);
     }
-    else if (!Number.isNaN(isNumberButton)) { // IF BUTTON IS NUMERIC
-      let currentDisplay = getDisplayValue();
-      let updatedValue = ((currentDisplay === 0) || (shouldResetDisplay ===
-            true) ? pressedButton : currentDisplay += pressedButton);
-      shouldResetDisplay = false;
-      hasRecentlyComputed = false;
-      setDisplayValue(updatedValue);
+    else if (buttonPressed.classList.contains('function')) {
+      let operationPressed = buttonPressed.textContent;
+      switch(operationPressed) {
+        case '+':
+        case '-':
+        case '×':
+        case '÷':
+          if (hasRecentlyComputed || ((valueInMemory === null || operatorInMemory === null))) {
+            operatorInMemory = operationPressed;
+            valueInMemory = activeDisplayValue;
+            isDisplayInactive = true;
+            break;
+          }
+          else {
+            let chainedExpression = operate(valueInMemory, activeDisplayValue, operatorInMemory);
+            setDisplayValue(chainedExpression);
+            operatorInMemory = operationPressed;
+            valueInMemory = activeDisplayValue;
+            isDisplayInactive = true;
+            break;
+          }
+        case '=':
+          if (valueInMemory === null || operatorInMemory === null) break;
+          else if (isRepeatedExpression) {
+            let repeatedExpression = operate(activeDisplayValue, valueInMemory, operatorInMemory);
+            setDisplayValue(repeatedExpression);
+            break;
+          }
+          else {
+            isRepeatedExpression = true;
+            let expressionResult = operate(valueInMemory, activeDisplayValue, operatorInMemory);
+            valueInMemory = activeDisplayValue;
+            setDisplayValue(expressionResult);
+            break;
+          }
+        case 'clear':
+          resetDisplay();
+          break;
+        default:
+          break;
+      }
     }
   }
 
-  const BUTTONS = document.querySelectorAll('div.button');
-  BUTTONS.forEach((button) => {
-      switch(button.textContent) {
-        case 'AC':
-          button.addEventListener('click', resetDisplay);
-          break;
-        case '±':
-          button.addEventListener('click', updateDisplay);
-          break;
-        case '%':
-          button.addEventListener('click', updateDisplay);
-          break;
-        case '.':
-          button.addEventListener('click', updateDisplay);
-          break;
-        default:
-          button.addEventListener('click', updateDisplay);
-          break;
-      }
-  })
-
-
-
-  /*
-  √ ( ) ^ backspace
-  */
-
-  calcInterface.textContent = 0;
+  const allButtons = document.querySelectorAll('div.button');
+  allButtons.forEach(button => {
+    button.addEventListener('click', updateDisplay)
+  });
 }
 
-display();
+calcDisplay();
