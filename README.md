@@ -17,6 +17,7 @@ A webpage implementation of a basic function calculator<br>
 
 ### Concepts
 - Nested loops
+- Switch statements
 - Document methods
 - Callback functions
 - Event listeners
@@ -30,8 +31,8 @@ Jack Moore - https://www.jacklmoore.com/notes/rounding-in-javascript/
 - Very useful article detailing ways to round decimals in Javascript
 
 #### To-Do
-~~ Round-off long decimals ~~<br>
-~~ Comma dilineation on numbers >= 1,000 and <= -1,000 ~~<br>
-~~ Floating point support ~~<br>
-~~ Backspace button support ~~<br>
-~~ Keyboard support ~~
+~~Round-off long decimals~~<br>
+~~Comma dilineation on numbers >= 1,000 and <= -1,000~~<br>
+~~Floating point support~~<br>
+~~Backspace button support~~<br>
+~~Keyboard support~~
