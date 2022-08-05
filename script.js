@@ -95,7 +95,7 @@ let calcDisplay = () => {
   let isRepeatedExpression = false;
   let hasRecentlyComputed = false;
 
-  let roundFloatValue = value => { // credits to Jack Moore - https://www.jacklmoore.com/notes/rounding-in-javascript/
+  let roundFloatValue = value => { // https://www.jacklmoore.com/notes/rounding-in-javascript/
     return Number(Math.round(value + `e` + 12) + `e-` + 12);
   }
 
