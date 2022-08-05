@@ -4,10 +4,11 @@ A webpage implementation of a basic function calculator<br>
 [Live Demo](https://sorrrb.github.io/js-calculator/)
 
 ## Demo Preview
-![Calculator Demo](./resources/calcdemo.png)
+![Calculator Demo](./resources/calcdemofinal.png)
 
 ### Changelog
 6/29/2022 19:40 - complete basic four function calculator
+8/5/2022 18:11 - complete basic scientific calculator
 
 ### Languages
 - HTML
@@ -25,11 +26,12 @@ A webpage implementation of a basic function calculator<br>
 - CSS Grid
 
 ## Attribution(s)
-N/A
+Jack Moore - https://www.jacklmoore.com/notes/rounding-in-javascript/
+- Very useful article detailing ways to round decimals in Javascript
 
 #### To-Do
-- Round-off long decimals calculated through four function means
-- Comma dilineation on numbers >= 1,000
-- Floating point decimals implementation
-- Backspace button
-- Keyboard support
+~~ - Round-off long decimals ~~
+~~ - Comma dilineation on numbers >= 1,000 and <= -1,000 ~~
+~~ - Floating point support ~~
+~~ - Backspace button support ~~
+~~ - Keyboard support ~~
