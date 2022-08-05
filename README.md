@@ -7,7 +7,7 @@ A webpage implementation of a basic function calculator<br>
 ![Calculator Demo](./resources/calcdemofinal.png)
 
 ### Changelog
-6/29/2022 19:40 - complete basic four function calculator
+6/29/2022 19:40 - complete basic four function calculator<br>
 8/5/2022 18:11 - complete basic scientific calculator
 
 ### Languages
