@@ -16,6 +16,7 @@ A webpage implementation of a basic function calculator<br>
 - JavaScript (vanilla - ES6)
 
 ### Concepts
+- Array, String, Number methods
 - Nested loops
 - Switch statements
 - Document methods
@@ -25,6 +26,7 @@ A webpage implementation of a basic function calculator<br>
 - Ternary operator
 - Manipulating boolean values / undefined values / null
 - CSS Grid
+- Codepoints
 
 ## Attribution(s)
 Jack Moore - https://www.jacklmoore.com/notes/rounding-in-javascript/
@@ -36,3 +38,5 @@ Jack Moore - https://www.jacklmoore.com/notes/rounding-in-javascript/
 ~~Floating point support~~<br>
 ~~Backspace button support~~<br>
 ~~Keyboard support~~
+Implement parentheses
+Implement 2nd button
