@@ -1,6 +1,5 @@
 let calcDisplay = () => {
   
-  const userDisplay = document.querySelector('div.display');
   const numDisplay = document.querySelector('div.output');
   const calcGrid = document.querySelector('div.interface');
 
@@ -46,9 +45,17 @@ let calcDisplay = () => {
     (functionButtons.item(i)).textContent = functionValueArray[i];
   }
   functionButtons.forEach(button => {
-    if (button.textContent === '↩') button.classList.add('delete');
-    if (button.textContent === '2nd') button.classList.add('switch');
-    if (button.textContent === 'CLEAR') button.classList.add('clear');
+    switch(button.textContent) {
+      case '2nd':
+        button.classList.add('switch');
+        break;
+      case '↩':
+        button.classList.add('delete');
+        break;
+      case 'CLEAR':
+        button.classList.add('clear');
+        break;
+    }
   });
 
   let add = (a,b) => a + b;
@@ -58,26 +65,20 @@ let calcDisplay = () => {
   let exponentiate = (a,b) => a**b;
 
   let operate = (firstOperand, secondOperand, operator) => {
-    let result;
     switch (operator) {
       case '+':
-        result = add(firstOperand, secondOperand);
-        break;
+        return add(firstOperand, secondOperand);
       case '-':
-        result = subtract(firstOperand, secondOperand);
-        break;
+        return subtract(firstOperand, secondOperand);
       case '×':
-        result = multiply(firstOperand, secondOperand);
-        break;
+        return multiply(firstOperand, secondOperand);
       case '÷':
-        result = divide(firstOperand, secondOperand);
-        if (secondOperand === 0) result = String.fromCodePoint(129313);
-        break;
+        return divide(firstOperand, secondOperand);
       case '^':
-        result = exponentiate(firstOperand, secondOperand);
-        break;
+        return exponentiate(firstOperand, secondOperand);
+      default:
+        return null;
     }
-    return result;
   }
 
   let factorial = x => {
@@ -91,13 +92,13 @@ let calcDisplay = () => {
   }
 
   let activeDisplayValue = 0;
-  numDisplay.textContent = activeDisplayValue;
-
   let valueInMemory = null;
   let operatorInMemory = null;
   let isDisplayInactive = true;
   let isRepeatedExpression = false;
   let hasRecentlyComputed = false;
+
+  numDisplay.textContent = activeDisplayValue;
 
   let roundFloatValue = value => { // https://www.jacklmoore.com/notes/rounding-in-javascript/
     return Number(Math.round(value + `e` + 12) + `e-` + 12);
@@ -292,7 +293,5 @@ let calcDisplay = () => {
 
   document.addEventListener('keydown', updateDisplay);
 }
-
-
 
 calcDisplay();
