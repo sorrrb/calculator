@@ -73,6 +73,7 @@ let calcDisplay = () => {
       case '×':
         return multiply(firstOperand, secondOperand);
       case '÷':
+        if (secondOperand === 0) return String.fromCodePoint(129313);
         return divide(firstOperand, secondOperand);
       case '^':
         return exponentiate(firstOperand, secondOperand);
