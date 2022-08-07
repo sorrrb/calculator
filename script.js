@@ -38,8 +38,8 @@ let calcDisplay = () => {
     (numButtons.item(i)).textContent = numValueArray[i];
   }
 
-  const functionValueArray = ['2nd', '(', ')', '↩', 'CLEAR',
-    '^', 'sin', 'cos', 'tan', '%', 'x!', 'x²', '1/x', '√', '÷',
+  const functionValueArray = ['2nd', '(', ')', '%', 'CLEAR',
+    'x!', 'sin', 'cos', 'tan', '↩', '^', 'x²', '1/x', '√', '÷',
     'π', '×', 'e', '-', 'log', '+', 'ln', '.', '(-)', '='];
   const functionButtons = document.querySelectorAll('div.function');
   for (let i = 0; i < functionValueArray.length; i++) {
@@ -55,6 +55,7 @@ let calcDisplay = () => {
   let subtract = (a,b) => a - b;
   let multiply = (a,b) => a * b;
   let divide = (a,b) => a / b;
+  let exponentiate = (a,b) => a**b;
 
   let operate = (firstOperand, secondOperand, operator) => {
     let result;
@@ -71,6 +72,9 @@ let calcDisplay = () => {
       case '÷':
         result = divide(firstOperand, secondOperand);
         if (secondOperand === 0) result = String.fromCodePoint(129313);
+        break;
+      case '^':
+        result = exponentiate(firstOperand, secondOperand);
         break;
     }
     return result;
@@ -164,6 +168,7 @@ let calcDisplay = () => {
           case '-':
           case '×':
           case '÷':
+          case '^':
             manageActiveButtons(buttonPressed);
             if (hasRecentlyComputed || ((valueInMemory === null || operatorInMemory === null))) {
               operatorInMemory = operationPressed;
@@ -248,7 +253,7 @@ let calcDisplay = () => {
             setDisplayValue(Math.tan(activeDisplayValue));
             break;
           default:
-            alert('Not added yet');
+            alert('Not yet implemented');
             break;
         }
       }
