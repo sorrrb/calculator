@@ -37,6 +37,6 @@ Jack Moore - https://www.jacklmoore.com/notes/rounding-in-javascript/
 ~~Comma dilineation on numbers >= 1,000 and <= -1,000~~<br>
 ~~Floating point support~~<br>
 ~~Backspace button support~~<br>
-~~Keyboard support~~
-Implement parentheses
-Implement 2nd button
+~~Keyboard support~~<br>
+Implement parentheses<br>
+Implement 2nd button<br>
