@@ -1,4 +1,4 @@
-# js-calculator
+# calculator
 A webpage implementation of a basic function calculator<br>
 
 [Live Demo](https://sorrrb.github.io/js-calculator/)
