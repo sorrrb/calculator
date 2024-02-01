@@ -1,7 +1,7 @@
 # calculator
 A webpage implementation of a basic function calculator<br>
 
-[Live Demo](https://sorrrb.github.io/js-calculator/)
+[Live Demo](https://sorrrb.github.io/calculator/)
 
 ## Demo Preview
 ![Calculator Demo](./resources/calcdemofinal.png)
